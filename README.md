@@ -27,8 +27,7 @@ The entry point command is `rexctl`.
 
 | Command | Description |
 | ------- | ----------- |
-| init    | Start the web server and initialise the hardware. |
-|         | This is the first command you need to run in order to bootstrap the robot. | 
+| init    | Start the web server and initialise the hardware. This is the first command you need to run in order to bootstrap the robot. |
 | status  | Get the status of all the daemons. |
 | exec | Start a `task`. Check the `/exec` endpoint for more info. |
 | log | Get the execution logs. |
@@ -80,23 +79,23 @@ Set a standard position.
 
 ```json
 {
-	"daemon_id": "motion",
-	"command_id": "set_position",
-	"command_args": {
-		"pose_id": "stand_low"
-	}
+  "daemon_id": "motion",
+  "command_id": "set_position",
+  "command_args": {
+    "pose_id": "stand_low"
+  }
 }
 ```
 
 Start a pre-trained gait.
 ```json
 {
-	"daemon_id": "motion",
-	"command_id": "set_gait",
-	"command_args": {
-		"action_id": "walk",
-		"simulation": true
-	}
+  "daemon_id": "motion",
+  "command_id": "set_gait",
+  "command_args": {
+    "action_id": "walk",
+    "simulation": true
+  }
 }
 ```
 
@@ -116,8 +115,8 @@ Get the current status.
 
 ```json
 {
-	"motion": "active",
-	"perception": "active"
+  "motion": "active",
+  "perception": "active"
 }
 ```
 
@@ -134,7 +133,7 @@ Kill all the running tasks.
 
 ```json
 {
-	"200": "command sent."
+  "200": "command sent."
 }
 ```
 
@@ -173,6 +172,6 @@ This data will be loaded at every startup.
 
 ```json
 {
-	"200": "command sent."
+  "200": "command sent."
 }
 ```
