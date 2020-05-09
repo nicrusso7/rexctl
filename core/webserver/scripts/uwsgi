@@ -1,0 +1,8 @@
+[uwsgi]
+socket = /tmp/portal.sock
+chdir = /var/www/portal
+module = server
+callable = app
+plugins = python36
+workers = 1
+enable-threads = true

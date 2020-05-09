@@ -1,15 +1,22 @@
+import logging
+
 import board
 import busio
 import adafruit_bno055
 
-from ...util.singleton import Singleton
+from util.singleton import Singleton
 
 
 class BNOSensor(metaclass=Singleton):
     
     def __init__(self):
-        i2c = busio.I2C(board.SCL, board.SDA)
-        self._bno_sensor = adafruit_bno055.BNO055(i2c)
+        i2c = busio.I2C(board.SCL_1, board.SDA_1)
+        self._bno_sensor = BNOSupport(i2c)
+        try:
+            with open('/data/calibration_data', 'rb') as f:
+                self.set_calibration(f.read())
+        except FileNotFoundError:
+            logging.info('calibration data not found.')
 
     def euler(self):
         return self._bno_sensor.euler
@@ -26,11 +33,22 @@ class BNOSensor(metaclass=Singleton):
     def temperature(self):
         return self._bno_sensor.temperature
 
+    def get_mode(self):
+        return self._bno_sensor.mode
+
     def get_calibration(self):
-        return BNOSupport(self._bno_sensor).get_calibration()
+        return self._bno_sensor.get_calibration()
+
+    def get_calibration_status(self):
+        return self._bno_sensor.calibration_status
 
     def set_calibration(self, data):
-        return BNOSupport(self._bno_sensor).set_calibration(data)
+        return self._bno_sensor.set_calibration(data)
+
+    def store_calibration(self):
+        data = self.get_calibration()
+        with open('/data/calibration_data', 'wb') as f:
+            f.write(data)
 
 
 class BNOSupport(adafruit_bno055.BNO055):
@@ -44,7 +62,7 @@ class BNOSupport(adafruit_bno055.BNO055):
         # Read the 22 bytes of calibration data and convert it to a list (from
         # a bytearray) so it's more easily serialized should the caller want to
         # store it.
-        cal_data = list(self._read_registers(0X55, 22))
+        cal_data = self._read_registers(0X55, 22)
         # Go back to normal operation mode.
         self.mode = adafruit_bno055.NDOF_MODE
         return cal_data
@@ -55,6 +73,7 @@ class BNOSupport(adafruit_bno055.BNO055):
         a value that was previously retrieved with get_calibration (and then
         perhaps persisted to disk or other location until needed again).
         """
+        data = list(data)
         # Check that 22 bytes were passed in with calibration data.
         if data is None or len(data) != 22:
             raise ValueError('Expected a list of 22 bytes for calibration data.')

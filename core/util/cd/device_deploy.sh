@@ -1,0 +1,1 @@
+scp -r * "$1"@"$2":dev/rexctl

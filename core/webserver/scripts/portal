@@ -1,0 +1,19 @@
+server {
+    listen 80;
+    server_tokens off;
+    server_name rex;
+
+     location / {
+         include uwsgi_params;
+         uwsgi_pass unix:/tmp/portal.sock;
+     }
+
+     location /static {
+         alias /var/www/portal/static;
+     }
+
+     ## Only requests to our Host are allowed
+     if ($host !~ ^(rex)$ ) {
+        return 444;
+     }
+}
