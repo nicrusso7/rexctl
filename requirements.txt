@@ -2,7 +2,7 @@ jinja2
 numpy
 adafruit-circuitpython-servokit
 adafruit-circuitpython-bno055
-tensorflow==1.15.2
+tensorflow==2.5.3
 rex_gym
 PyYAML
 click
